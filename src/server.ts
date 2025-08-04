@@ -2,6 +2,7 @@ import express, { Application } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import path from "path";
 import quizRoutes from "./routes/quizRoutes";
 
 dotenv.config();
@@ -19,6 +20,15 @@ mongoose
 
 // Routes
 app.use("/api", quizRoutes);
+
+// Frontend Build files
+const staticPath = path.join(__dirname, "dist");
+app.use(express.static(staticPath));
+
+// Fallback
+app.get(/^\/.*$/, (_req, res) => {
+  res.sendFile(path.join(staticPath, "index.html"));
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
